@@ -62,22 +62,38 @@ class Framboesa:
     def get_pihole_cache(self): return self.get_query2('pihole', 'queries_cached', 'unit')
     
     def get_unbound(self):
-        hits = self.get_unbound_cache()["value"] + self.get_pihole_cache()["value"]
-        miss = self.get_miss()["value"]
-        blocked = self.get_blocked()["value"]
+        hits = 0
+        miss = 0
+        blocked = 0
+        try:
+            hits += self.get_unbound_cache()["value"] + self.get_pihole_cache()["value"]
+            miss += self.get_miss()["value"]
+            blocked += self.get_blocked()["value"]
+        except: 
+            print("Can't get data from either unbound or pihole")
         
         message = ["**DNS** *(last 6 hours)*", 
                    "  * {0: .1f}%  -- {2: 5d} : Cache",
                    "  * {5: .1f}%  -- {4: 5d} : Blocked",
                    "  * {1: .1f}%  -- {3: 5d} : External requests"]
         
+        hits_pct = 0
+        miss_pct = 0
+        blocked_pct = 0
+        try:
+            hits_pct = round(hits / (hits + miss + blocked) * 100, 1)
+            miss_pct = round(hits / (hits + miss + blocked) * 100, 1), 
+            blocked_pct = round(blocked / (hits + miss + blocked) * 100, 1)
+        except:
+            pass
+
         return "\n".join(message).format(
-            round(hits / (hits + miss + blocked) * 100, 1), 
-            round(miss / (hits + miss + blocked) * 100, 1), 
+            hits_pct,
+            miss_pct,
             round(hits), 
             round(miss), 
             round(blocked), 
-            round(blocked / (hits + miss + blocked) * 100, 1)
+            blocked_pct
         )
     def get_temperature(self):
         query = self.query('sensors', 'temperature')
@@ -134,5 +150,4 @@ class Framboesa:
             self.get_load(), 
             self.get_unbound()
         )
-
 
