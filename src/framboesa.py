@@ -1,5 +1,6 @@
 import os.path
 import os
+import numbers
 import requests
 import subprocess
 from pathlib import Path
@@ -66,11 +67,17 @@ class Framboesa:
         miss = 0
         blocked = 0
         try:
-            hits += self.get_unbound_cache()["value"] + self.get_pihole_cache()["value"]
-            miss += self.get_miss()["value"]
-            blocked += self.get_blocked()["value"]
-        except: 
-            print("Can't get data from either unbound or pihole")
+            hits = self.get_unbound_cache()["value"] + self.get_pihole_cache()["value"]
+        except:
+            pass
+        try:
+            miss = self.get_miss()["value"]
+        except:
+            pass
+        try:
+            blocked = self.get_blocked()["value"]
+        except:
+            pass
         
         message = ["**DNS** *(last 6 hours)*", 
                    "  * {0: .1f}%  -- {2: 5d} : Cache",
@@ -82,7 +89,13 @@ class Framboesa:
         blocked_pct = 0
         try:
             hits_pct = round(hits / (hits + miss + blocked) * 100, 1)
+        except:
+            pass
+        try:
             miss_pct = round(hits / (hits + miss + blocked) * 100, 1), 
+        except:
+            pass
+        try:
             blocked_pct = round(blocked / (hits + miss + blocked) * 100, 1)
         except:
             pass
@@ -90,9 +103,9 @@ class Framboesa:
         return "\n".join(message).format(
             hits_pct,
             miss_pct,
-            round(hits), 
-            round(miss), 
-            round(blocked), 
+            round(hits),
+            round(miss),
+            round(blocked) if blocked is not None else 0,
             blocked_pct
         )
     def get_temperature(self):
