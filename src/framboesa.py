@@ -92,7 +92,7 @@ class Framboesa:
         except:
             pass
         try:
-            miss_pct = round(hits / (hits + miss + blocked) * 100, 1), 
+            miss_pct = round(hits / (hits + miss + blocked) * 100, 1)
         except:
             pass
         try:
