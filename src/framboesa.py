@@ -80,9 +80,9 @@ class Framboesa:
             pass
         
         message = ["**DNS** *(last 6 hours)*", 
-                   "  * {0: .1f}%  -- {2: 5d} : Cache",
-                   "  * {5: .1f}%  -- {4: 5d} : Blocked",
-                   "  * {1: .1f}%  -- {3: 5d} : External requests"]
+                   "- {0: .1f}%  -- {2: 5d} : Cache",
+                   "- {5: .1f}%  -- {4: 5d} : Blocked",
+                   "- {1: .1f}%  -- {3: 5d} : External requests"]
         
         hits_pct = 0
         miss_pct = 0
@@ -135,7 +135,7 @@ class Framboesa:
 
     def get_load(self):
         load = os.getloadavg()
-        return "**Load**\n  * {0} (1min)\n  * {1} (5min)\n  * {2} (15min)".format(load[0], load[1], load[2])
+        return "**Load**\n- {0} _(1min)_\n- {1} _(5min)_\n- {2} _(15min)_".format(load[0], load[1], load[2])
 
     def get_info(self):
         t = self.get_temperature()
@@ -145,8 +145,8 @@ class Framboesa:
              "**Framboesa summary**",
              "",
              "**Sensors**:",
-             " * Relative humidity: {}%",
-             " * Temperature: {}ºC",
+             "- Relative humidity: {}%",
+             "- Temperature: {}ºC",
              "",
              "{}",
              "",
